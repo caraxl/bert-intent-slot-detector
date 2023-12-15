@@ -1,6 +1,5 @@
 import torch
 import torch.nn as nn
-
 from transformers import BertPreTrainedModel, BertModel
 
 class BertMultiHeadJointClassification(BertPreTrainedModel):
@@ -66,12 +65,15 @@ class BertMultiHeadJointClassification(BertPreTrainedModel):
             output_hidden_states=output_hidden_states,
             return_dict=return_dict,
         )
+        # output shape:[batch_size, sequence_length, hidden_size]
         #print(outputs)
         #sequence_output, pooled_output = outputs[0], outputs[1]
         sequence_output = outputs['last_hidden_state']
         pooled_output = outputs['pooler_output']
         
         sequence_output = self.dropout(sequence_output)
+        # token_logits shape: [batch_size, sequence_length, self.token_label_nums[i]]
+        # 功能：将每个token映射到固定是类别标签上，比如，标签数量为3，则每个token都会生成一个概率数组，数组之和为1，数组每个元素表示该token属于每个类别的概率
         token_logits = [self.token_heads[i](sequence_output) for i in range(self.token_head_num)]
 
         pooled_output = self.dropout(pooled_output)
