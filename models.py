@@ -7,6 +7,8 @@ class BertMultiHeadJointClassification(BertPreTrainedModel):
     def __init__(self, config, seq_label_nums, token_label_nums):
         '''
         num_seq_labels & num_token_labels : [head1_label_num, head2_label_num, ..., headn_label_num]
+        seq_label_nums：整个序列所属的类别数量，比如意图识别总共有10个类别，seq_label_nums=10
+        token_label_nums：单个token所属的类别数量，在实体识别中，单个token可以选择的类别数与实体类型数成正比，而且会区分B\I\O，如：B_LUNCH\I_LUNCH\O。
         '''
         super().__init__(config)
         #print(config)
